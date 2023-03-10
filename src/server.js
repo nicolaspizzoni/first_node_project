@@ -6,8 +6,34 @@
 //node:_modulo indica um modulo interno NODE
 import http from 'node:http'
 
+//Cabeçalhos (Requisição/Resposta) => Metadados, informa qual tipo de dado está sendo recebido e retornado tanto para frontend quanto backend respectivamente
+
+//StateFull
+const user = []
+
 const server = http.createServer((request, response) => {
-    return response.end("Hello World 3")
+    const {method, url} = request
+
+    console.log(method, url)
+
+    if(method === 'GET' && url === '/users'){
+        return response
+        .setHeader('Content-type', 'application/json')
+        .end(JSON.stringify(user))
+    }
+
+    if(method === 'POST' && url === '/users') {
+        user.push({
+            id: 1,
+            name: 'John Doe',
+            email: 'johndoe@example.com',
+        })
+
+        //writeHeade retorna o status code do http
+        return response.writeHead(201).end()
+    }
+
+    return response.writeHead(404).end("Not found")
 })
 
 server.listen(3333)
